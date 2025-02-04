@@ -3,7 +3,7 @@ fun main() {
     val result = StringBuilder()
     for(i in 0 until t) {
         val (n, k) = readln().split(" ").map { it.toInt() }
-        val dif = n-k
+        val dif = n-k //한 subarray에 대한 최대 수 여기다가 +1 해야함
         val a = readln().split(" ").map { it.toInt() }.toMutableList()
         if(dif==0) {
             var tempArr = mutableListOf<Int>()
@@ -19,18 +19,14 @@ fun main() {
             }
         }
         else { //짝수니까 전체 array 에서 짝수인덱스부터 시작해야함 (1)
-            for(j in 1 until n step 2) {
-                val tempArr = mutableListOf<Int>()
-                for(p in j until dif+j) { //최대 dif
-                    tempArr.add(a[p])
-                }
-                for(p in j until dif+j) {
-                    if(tempArr[j/2+p]!=j/2+p) {
-                        result.append("${j/2+p}\n")
-                        break
-                    }
+            var temp = 2
+            for(j in 0 until dif+1) {
+                if(a[j+1]!=1) {
+                    temp = 1
                 }
             }
+            result.append("$temp\n")
         }
     }
+    print(result)
 }
