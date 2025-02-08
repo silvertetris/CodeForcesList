@@ -9,7 +9,6 @@ fun main() {
     val t = reader.readLine().toInt()
     for(i in 0 until t) {
         val (x, m) = reader.readLine().split(" ").map { it.toLong()}
-        Long
         println("$x $m")
     }
     writer.flush()
