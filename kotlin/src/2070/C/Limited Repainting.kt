@@ -7,60 +7,35 @@ fun main() {
     val t = br.readLine().toInt()
     repeat(t) {
         val (n, k) = br.readLine().split(" ").map { it.toInt() }
-        val s = br.readLine()
-        val a = br.readLine().split(" ").map { it.toInt() }
-
-        var maxA = 0
-        a.forEach { maxA = max(maxA, it) }
-
-        var low = 0
-        var high = maxA
-        var answer = maxA
-
-        fun isPossible(x: Int): Boolean {
-            var totalSegments = 0
-            var i = 0
-            val len = s.length
-            while (i < len) {
-                while (i < len && s[i] == 'R' && a[i] > x) {
-                    i++
+        val s = br.readLine()//color
+        val a = br.readLine().split(" ").map { it.toInt() } // penalty
+        var l = -1
+        var r = Int.MAX_VALUE
+        while(l+1 <r) {
+            val mid = (l+r) /2
+            var nk = k
+            var lst = 0
+            for(i in 0 until n) {
+                if(a[i]>mid && s[i]=='R') {
+                    lst = 0
                 }
-                if (i >= len) break
-                val start = i
-                while (i < len) {
-                    if (s[i] == 'R' && a[i] > x) break
-                    i++
-                }
-                val end = i - 1
-                var hasMandatory = false
-                for (j in start..end) {
-                    if (s[j] == 'B' && a[j] > x) {
-                        hasMandatory = true
-                        break
+                else if(a[i]>mid && s[i]=='B') {
+                    if(lst==0) {
+                        nk-=1
+                        lst=1
+                    } else {
+                        lst = 1
                     }
                 }
-                if (hasMandatory) {
-                    totalSegments++
-                    if (totalSegments > k) return false
-                }
             }
-            return totalSegments <= k
-        }
-
-        while (low <= high) {
-            val mid = (low + high) / 2
-            if (isPossible(mid)) {
-                answer = mid
-                high = mid - 1
-            } else {
-                low = mid + 1
+            if(nk>=0) {
+                r=mid
+            }else {
+                l=mid
             }
         }
-
-        bw.write("$answer\n")
+        bw.write("$r\n")
     }
-
     bw.flush()
     bw.close()
-    br.close()
 }
