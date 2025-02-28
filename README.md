@@ -1,3 +1,4 @@
 # CodeForcesList
- solved&solving problemSet of CodeForces \n
+solved&solving problemSet of CodeForces
+ 
 handle: Seonggwon
