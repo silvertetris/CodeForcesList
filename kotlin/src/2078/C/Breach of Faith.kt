@@ -6,7 +6,7 @@ fun main() {
     val t = br.readLine().toInt()
     repeat(t) {
         val n = br.readLine().toInt()
-        val b = br.readLine().split(" ").map { it.toInt() }.toMutableSet().sortedDescending()
+        val b = br.readLine().split(" ").map { it.toInt() }.toMutableList().sortedDescending()
         var bool = true
         var cnt = BigInteger.ZERO
         bw.write("${b[0]} ")
