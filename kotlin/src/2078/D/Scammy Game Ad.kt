@@ -1,71 +1,64 @@
 fun main() {
     val br = System.`in`.bufferedReader()
     val bw = System.out.bufferedWriter()
-    val t = br.readLine().toInt()
+    val t = br.readLine().toInt() // Read the number of test cases
 
     repeat(t) {
-        val n = br.readLine().toInt()
-        val c1 = CharArray(n) //c = operation
-        val a1 = LongArray(n)// a = number
-        val c2 = CharArray(n)
-        val a2 = LongArray(n)
-        val h = mutableListOf<Pair<Int, Int>>() //왼쪽 아니면 오른쪽 선택, 인덱스 (1 이면 왼쪽 2면 오른쪽)
+        val n = br.readLine().toInt() // Read the number of pairs of gates
 
-        var l = 1L
-        var r = 1L
+        // Arrays to store operations and values for left and right gates
+        val op = Array(n + 1) { Array(2) { "+" } }
+        val value = Array(n + 1) { IntArray(2) }
 
-        for (i in 0 until n) {
-            val temp = br.readLine().split(" ")
-            c1[i] = temp[0][0]
-            a1[i] = temp[1].toLong()
-            c2[i] = temp[2][0]
-            a2[i] = temp[3].toLong()
-
-            when { //remain은 큰 곱셈쪽으로 모든 수를 보냄
-                //왜 두 수가 같을 때는 추가를 안하는 것인가??
-                c1[i] == 'x' && c2[i] == 'x' -> {
-                    if (a1[i] > a2[i]) h.add(1 to i)
-                    else if (a1[i] < a2[i]) h.add(2 to i)
-                }
-                c1[i] == 'x' -> h.add(1 to i)
-                c2[i] == 'x' -> h.add(2 to i)
-            }
+        // Read the input for each pair of gates
+        for (i in 1..n) {
+            val tmp = br.readLine().split(" ")
+            op[i][0] = tmp[0]  // Operation for left gate
+            value[i][0] = tmp[1].toInt()  // Value for left gate
+            op[i][1] = tmp[2]  // Operation for right gate
+            value[i][1] = tmp[3].toInt()  // Value for right gate
         }
 
-        bw.write("${findAns(n, c1, a1, c2, a2, h, l, r)}\n")
-    }
-    bw.flush()
-    bw.close()
-}
+        // Initialize the first gate as "+ 1" to match the problem's starting condition
+        op[0] = arrayOf("+", "+")
+        value[0] = intArrayOf(1, 1)
 
-fun findAns(
-    n: Int,
-    c1: CharArray,
-    a1: LongArray,
-    c2: CharArray,
-    a2: LongArray,
-    h: List<Pair<Int, Int>>,
-    lStart: Long,
-    rStart: Long
-): Long {
-    var l = lStart
-    var r = rStart
-    var cnt = 0
+        // dp[i][0] = maximum people in left lane after processing i-th pair of gates
+        // dp[i][1] = maximum people in right lane after processing i-th pair of gates
+        val dp = Array(n + 2) { LongArray(2) }
+        dp[n + 1][0] = 1 // Base case: 1 person in left lane
+        dp[n + 1][1] = 1 // Base case: 1 person in right lane
 
-    for (i in 0 until n) {
-        val sum = (if (c1[i] == '+') a1[i] else (a1[i] - 1) * l) + (if (c2[i] == '+') a2[i] else (a2[i] - 1) * r)
-        //sum이 결국 remain sum 임
-        if (cnt < h.size) {
-            if (h[cnt].second == i) cnt++ //다음 것에 remain 몰아서 주는 작업, h의 second 인덱스는 띄엄 띄엄 있음
-            if (cnt < h.size) {
-                if (h[cnt].first == 1) l += sum //1이니까 왼쪽에 remain 추가
-                else r += sum
+        // Backward DP: calculating the max possible people from the last gate to the first
+        for (i in n downTo 1) { //어차피 곱하기를 거쳐서 나오고 그중에 maxOf 를 한다면 val 끼리 비교를 안해도 됨
+            // If left gate is "x a", multiply (a-1) times max possible people and add
+            dp[i][0] = if (op[i][0] == "x") {
+                dp[i + 1][0] + (value[i][0] - 1) * maxOf(dp[i + 1][0], dp[i + 1][1])
+            } else { // If it's "+ a", just take the same max value from the next stage
+                dp[i + 1][0]
+            }
+
+            // If right gate is "x a", multiply (a-1) times max possible people and add
+            dp[i][1] = if (op[i][1] == "x") {
+                dp[i + 1][1] + (value[i][1] - 1) * maxOf(dp[i + 1][0], dp[i + 1][1])
             } else {
-                l += sum //뭐로 저장하든 상관 X 둘다 같은 경우니 결국 L+R 함 default 한쪽값은 1
+                dp[i + 1][1]
             }
-        } else {
-            r += sum //여기도 뭐로 저장하든 상관 X
         }
+
+        // Now compute the final result
+        var ans = 0L
+        for (i in 1..n) {
+            var sm = 0
+            if (op[i][0] == "+") sm += value[i][0] // Sum if left gate is "+"
+            if (op[i][1] == "+") sm += value[i][1] // Sum if right gate is "+"
+            ans += sm * maxOf(dp[i + 1][0], dp[i + 1][1])
+        }
+
+        // Add the final values from dp[1]
+        ans += dp[1][0] + dp[1][1]
+        bw.write("$ans\n") // Output the answer
     }
-    return l + r
+
+    bw.flush()
 }
