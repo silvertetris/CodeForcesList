@@ -1,36 +1,33 @@
-import kotlin.math.ceil
-
 fun main() {
     val br = System.`in`.bufferedReader()
     val bw = System.out.bufferedWriter()
     val t = br.readLine().toInt()
-
     repeat(t) {
-        val (n, k, x) = br.readLine().split(" ").map { it.toBigInteger() }
-        val a = br.readLine().split(" ").map { it.toInt() }
-
-        val prefixSum = Array(n.toInt() + 1) { 0.toBigInteger() }
-        for (i in 1..n.toInt()) {
-            prefixSum[i] = prefixSum[i - 1] + a[i - 1].toBigInteger()
+        var(n, k, x) = br.readLine().split(" ").map { it.toBigInteger() }
+        val a = br.readLine().split(" ").map { it.toBigInteger() }.toMutableList()
+        if(a.sumOf { it }*k<x) {
+            bw.write("0\n")
+            return@repeat
         }
-        var count = 0L
 
-        for (pos in 1..n.toInt()) {
-            val sum = prefixSum[n.toInt()] - prefixSum[pos - 1]
-
-            if (sum >= x) {
-                count += k.toInt()
-            } else {
-                val need = x - sum
-                val c = ceil(need.toDouble() / prefixSum[n.toInt()].toLong()).toLong().toBigInteger()
-
-                if (c <= k - 1.toBigInteger()) {
-                    count += (k - c).toLong()
-                }
+        var l = 1
+        var r = (n*k).toInt()
+        while(l<=r) {
+            var m = (r+l)/2
+            var cnt_a = (n.toInt()*k.toInt()-m+1)/(n.toInt())
+            var suff = (n.toInt()*k.toInt()-m+1)%n.toInt()
+            var sum = cnt_a.toBigInteger() * a.sumOf { it }
+            for(i in n.toInt()-suff until n.toInt()) {
+                sum+=a[i]
+            }
+            if(sum<x) {
+                r = m-1
+            }
+            else {
+                l = m+1
             }
         }
-
-        bw.write("$count\n")
+        bw.write("$r\n")
     }
     bw.flush()
     bw.close()
