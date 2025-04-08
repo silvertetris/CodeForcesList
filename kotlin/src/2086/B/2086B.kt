@@ -2,33 +2,40 @@ fun main() {
     val br = System.`in`.bufferedReader()
     val bw = System.out.bufferedWriter()
     val t = br.readLine().toInt()
+
     repeat(t) {
-        var(n, k, x) = br.readLine().split(" ").map { it.toBigInteger() }
-        val a = br.readLine().split(" ").map { it.toBigInteger() }.toMutableList()
-        if(a.sumOf { it }*k<x) {
+        val (n, k, x) = br.readLine().split(" ").map { it.toLong() }
+        val a = br.readLine().split(" ").map { it.toLong() }
+        val total = a.sum()
+
+        if (total * k < x) {
             bw.write("0\n")
             return@repeat
         }
 
-        var l = 1
-        var r = (n*k).toInt()
-        while(l<=r) {
-            var m = (r+l)/2
-            var cnt_a = (n.toInt()*k.toInt()-m+1)/(n.toInt())
-            var suff = (n.toInt()*k.toInt()-m+1)%n.toInt()
-            var sum = cnt_a.toBigInteger() * a.sumOf { it }
-            for(i in n.toInt()-suff until n.toInt()) {
-                sum+=a[i]
+        var l = 1L
+        var r = n * k
+
+        while (l <= r) {
+            val m = (l + r) / 2
+            val cntA = (n * k - m + 1) / n
+            val suffix = (n * k - m + 1) % n
+            var sum = cntA * total
+
+            for (i in (n - suffix).toInt() until n.toInt()) { //끝에꺼 더 더해주는 작업
+                sum += a[i]
             }
-            if(sum<x) {
-                r = m-1
-            }
-            else {
-                l = m+1
+
+            if (sum < x) {
+                r = m - 1
+            } else {
+                l = m + 1
             }
         }
+
         bw.write("$r\n")
     }
+
     bw.flush()
     bw.close()
 }
