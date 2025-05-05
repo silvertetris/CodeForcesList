@@ -1,36 +1,26 @@
-import kotlin.math.max
-import kotlin.math.min
-
 fun main() {
     val br = System.`in`.bufferedReader()
     val bw = System.out.bufferedWriter()
     val t = br.readLine().toInt()
     repeat(t) {
         val (n, k) = br.readLine().split(" ").map { it.toInt() }
-        val l = br.readLine().split(" ").map { it.toLong() }
-        val r = br.readLine().split(" ").map { it.toLong() }
-
-        var posibSum = 0L
-        val best = mutableListOf<Long>()
-
+        val left = br.readLine().split(" ").map { it.toInt() }
+        val right = br.readLine().split(" ").map { it.toInt() }
+        val a = IntArray(n) { 0 }
+        val b = IntArray(n) { 0 }
+        var ans = 0L
         for (i in 0 until n) {
-            val li = l[i]
-            val ri = r[i]
-
-            posibSum += max(li, ri) //가능한 수니까 무조건 큰걸로
-            best.add(min(li, ri)) //최선의 경우
+            a[i] = maxOf(left[i], right[i])
+            b[i] = minOf(left[i], right[i])
+            ans += a[i] //한쪽만 뽑을 최악의 수 -> 매칭되는 페어 = 0
         }
-
-        best.sortDescending()
-
-        var bestSum = 0L
-        val numGainsToTake = k-1
-        for (j in 0 until numGainsToTake) {
-            bestSum += best[j]
+        //이제 매칭되게 해줘야함
+        b.sortDescending()
+        for (i in 0 until k - 1) {
+            ans += b[i] //k-1 개가 무조건 매칭될 장갑 수 (최악의 수)
         }
-        val answer = posibSum + bestSum + 1
-
-        bw.write("$answer\n")
+        ans++ //이제 어떤 장갑을 뽑던 간에 하나의 색이 일치 됨
+        bw.write("$ans\n")
     }
     bw.flush()
     bw.close()
