@@ -17,5 +17,6 @@ foreach(_src IN LISTS SRC_FILES)
     string(REGEX REPLACE "[^A-Za-z0-9]" "_" _target "${_name}")
 
     # now add an executable called e.g. Row_GCD or Gerald_and_Giant_Chess
-    add_executable(${_target} "${_src}")
+    add_executable(${_target} "${_src}"
+            cpp/264/C/264C.cpp)
 endforeach()
