@@ -1,8 +1,7 @@
-# top of CMakeLists.txt
 cmake_minimum_required(VERSION 3.15)
 project(CodeForceList LANGUAGES CXX)
 
-# grab all your .cpp files
+# 모든 .cpp 파일 재귀 탐색
 file(GLOB_RECURSE
         SRC_FILES
         CONFIGURE_DEPENDS
@@ -10,13 +9,11 @@ file(GLOB_RECURSE
 )
 
 foreach(_src IN LISTS SRC_FILES)
-    # get the bare filename (no path, no extension)
+    # 파일 이름(확장자 제외) 추출
     get_filename_component(_name "${_src}" NAME_WE)
-
-    # replace spaces (and, if you like, other non-alphanumerics) with underscores
+    # 비알파벳/숫자는 언더스코어로 치환
     string(REGEX REPLACE "[^A-Za-z0-9]" "_" _target "${_name}")
 
-    # now add an executable called e.g. Row_GCD or Gerald_and_Giant_Chess
-    add_executable(${_target} "${_src}"
-            cpp/264/C/264C.cpp)
+    # _src(현재 파일)만으로 실행 파일 생성
+    add_executable(${_target} "${_src}")
 endforeach()
