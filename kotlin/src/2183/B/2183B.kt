@@ -5,17 +5,18 @@ fun main() {
     repeat(t) {
         val(n, k) = br.readLine().split(" ").map { it.toInt() }
         val a = br.readLine().split(" ").map { it.toInt() }.sorted()
-        if(a[0]!=0) {
-            bw.write("0\n")
-            return@repeat
-        }
-        for(i in 1 until k-1) {
-            if(a[i]-a[i-1]>1) {
-                bw.write("${a[i-1]+1}\n")
-                return@repeat
+        var ans = -1
+        var cnt = 0
+        for(i in 0 until n) {
+            if(cnt==k-1) {
+                break
+            }
+            if(ans+1 == a[i]) {
+                ans = a[i]
+                cnt++
             }
         }
-        bw.write("${a[k-1]+1}\n")
+        bw.write("${ans+1}\n")
     }
     bw.flush()
 }
