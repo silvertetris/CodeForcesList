@@ -15,13 +15,13 @@ fun main() {
         }
 
         val set = mutableSetOf<Int>()
-        val filteredArr = Array(n) { IntArray(0) }
+        val rev = Array(n) { IntArray(0) }
 
         for (i in 0 until n) {
             for (k in blogs[i].size - 1 downTo 0) {
                 set.add(blogs[i][k])
             }
-            filteredArr[i] = set.toIntArray()
+            rev[i] = set.toIntArray()
             set.clear()
         }
 
@@ -38,29 +38,33 @@ fun main() {
                     best = i; continue
                 }
 
-                var p = 0
-                var q = 0
+                val curblog = rev[i]
+                val bestblog = rev[best]
+
+                var idxCur = 0
+                var idxBest = 0
 
                 while (true) {
-                    while (p < filteredArr[i].size && filteredArr[i][p] in seen) p++
-                    while (q < filteredArr[best].size && filteredArr[best][q] in seen) q++
+                    while (idxCur < curblog.size && curblog[idxCur] in seen) idxCur++
+                    while (idxBest < bestblog.size && bestblog[idxBest] in seen) idxBest++
 
-                    if (p == filteredArr[i].size || q == filteredArr[best].size) {
-                        if (p == filteredArr[i].size && q != filteredArr[best].size) best = i//더 작은놈이니까
+                    if (idxCur == curblog.size || idxBest == bestblog.size) {
+                        if (idxCur == curblog.size && idxBest != bestblog.size) best = i
                         break
                     }
 
-                    if (filteredArr[i][p] != filteredArr[best][q]) {
-                        if (filteredArr[i][p] < filteredArr[best][q]) best = i
+                    if (curblog[idxCur] != bestblog[idxBest]) {
+                        if (curblog[idxCur] < bestblog[idxBest]) best = i
                         break
                     }
 
-                    p++; q++
+                    idxCur++
+                    idxBest++
                 }
             }
 
             used[best] = true
-            for (v in filteredArr[best])
+            for (v in rev[best])
                 if (seen.add(v)) answer.add(v)
         }
 
