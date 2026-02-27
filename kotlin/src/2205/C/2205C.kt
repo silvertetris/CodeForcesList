@@ -2,9 +2,29 @@ fun main() {
     val br = System.`in`.bufferedReader()
     val bw = System.out.bufferedWriter()
     val t = br.readLine().toInt()
+    fun lexi(a:MutableList<Int>, b:MutableList<Int>): Boolean {//b가 크면 1 아니면 -1
+        val minSize = minOf(a.size, b.size)
+        for(i in 0 until minSize) {
+            if(a[i]!=b[i]) {
+                return a[i]<b[i]
+            }
+        }
+        return a.size<b.size
+    }
+
     repeat(t) {
         val n = br.readLine().toInt()
+        val inAns = BooleanArray(100_000_1) {false}
         val blogs = Array(n) { IntArray(0) }
+
+        fun change(list: MutableList<Int>, ans: MutableList<Int>) {
+            val tmp = ArrayList<Int>()
+            for (v in list) {
+                if (!inAns[v]) tmp.add(v)
+            }
+            list.clear()
+            list.addAll(tmp)
+        }
         for (i in 0 until n) {
             val input = br.readLine().split(" ").map { it.toInt() }
             val arr = IntArray(input[0])
@@ -15,63 +35,35 @@ fun main() {
         }
 
         val set = mutableSetOf<Int>()
-        val rev = Array(n) { IntArray(0) }
+        val rev = Array(n) { mutableListOf<Int>() }
 
         for (i in 0 until n) {
             for (k in blogs[i].size - 1 downTo 0) {
                 set.add(blogs[i][k])
             }
-            rev[i] = set.toIntArray()
+            rev[i] = set.toMutableList()
             set.clear()
         }
-
-        val used = BooleanArray(n)
-        val seen = HashSet<Int>()
-        val answer = ArrayList<Int>()
-
-        repeat(n) {
+        val ans = mutableListOf<Int>()
+        val visited = BooleanArray(n) { false }
+        for(i in 0 until n) {
             var best = -1
-
-            for (i in 0 until n) {
-                if (used[i]) continue
-                if (best == -1) {
-                    best = i; continue
-                }
-
-                val curblog = rev[i]
-                val bestblog = rev[best]
-
-                var idxCur = 0
-                var idxBest = 0
-
-                while (true) {
-                    while (idxCur < curblog.size && curblog[idxCur] in seen) idxCur++
-                    while (idxBest < bestblog.size && bestblog[idxBest] in seen) idxBest++
-
-                    if (idxCur == curblog.size || idxBest == bestblog.size) {
-                        if (idxCur == curblog.size && idxBest != bestblog.size) best = i
-                        break
-                    }
-
-                    if (curblog[idxCur] != bestblog[idxBest]) {
-                        if (curblog[idxCur] < bestblog[idxBest]) best = i
-                        break
-                    }
-
-                    idxCur++
-                    idxBest++
+            for(j in 0 until n) {
+                if(visited[j]) continue
+                if(best==-1 || lexi(rev[j], rev[best])) {
+                    best = j
                 }
             }
-
-            used[best] = true
-            for (v in rev[best])
-                if (seen.add(v)) answer.add(v)
+            visited[best] = true
+            ans.addAll(rev[best])
+            for(i in rev[best].indices) {
+                inAns[rev[best][i]] = true
+            }
+            for(j in 0 until n) {
+                if(!visited[j]) change(rev[j], ans)
+            }
         }
-
-        for (i in answer.indices) {
-            bw.write("${answer[i]} ")
-        }
-        bw.write("\n")
+        bw.write("${ans.joinToString(" ")}\n")
     }
     bw.flush()
 }
