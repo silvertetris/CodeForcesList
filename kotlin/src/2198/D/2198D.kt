@@ -32,27 +32,23 @@ fun main() {
         8-> 2가 4개 아니면 6이 1개고 2가 1개
 
          */
-        if (temp == 9) {
+        if(temp==9) {
             bw.write("YES\n")
-        } else if (temp == 1 && ((two >= 5)|| (three>=1 && two>=2))) {
-            bw.write("YES\n")
-        } else if (temp == 2 && two > 0) {
-            bw.write("YES\n")
-        } else if (temp == 3 && (two >= 6 || (three >= 1 && two >= 3) || three > 1)) {
-            bw.write("YES\n")
-        } else if (temp == 4 && two > 1) {
-            bw.write("YES\n")
-        } else if (temp == 5 && (two >= 7 || (three >= 1 && two >= 4) || (three >= 2 && two >= 1))) {
-            bw.write("YES\n")
-        } else if (temp == 6 && (two >= 3 || three > 0)) {
-            bw.write("YES\n")
-        } else if (temp == 7 && ((two >= 8) || (three >= 1 && two >= 5) || (three >= 2 && two >= 2))) {
-            bw.write("YES\n")
-        } else if (temp == 8 && ((two >= 4) || (two >= 1 && three > 0))) {
-            bw.write("YES\n")
-        } else {
-            bw.write("NO\n")
+            return@repeat
         }
+        var ok = false
+
+        for (a in 0..minOf(two, 8)) {
+            for (b in 0..minOf(three, 2)) {
+                if ((2*a + 6*b) % 9 == temp) {
+                    ok = true
+                    break
+                }
+            }
+            if (ok) break
+        }
+
+        bw.write(if (ok) "YES\n" else "NO\n")
     }
     bw.flush()
     bw.close()
