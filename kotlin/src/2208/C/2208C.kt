@@ -30,7 +30,7 @@ c_i 값, p_i 엉려움
         }
         val dp = DoubleArray(n+2) {0.0}
         for(i in n downTo 1) {//#3. transitions -> skip, do it
-            dp[i] = maxOf(dp[i+1], c[i].toDouble() + dp[i + 1] * (100.0 - p[i]) / 100.0)
+            dp[i] = maxOf(dp[i+1], c[i].toDouble() + dp[i + 1] * (1 - p[i]/100.0))
         }
         //#4. final answer
         bw.write("${dp[1]}\n")
