@@ -5,30 +5,39 @@ fun main() {
     repeat(t) {
         val n = br.readLine().toInt()
         var ans = 0
-        for (i in 0 until n step 2) {
-            bw.write("? $i ${i + 1}\n")
+
+        for (i in 1 until n) {
+            bw.write("? ${2*i+1} ${2*i+2}\n")
             bw.flush()
             val res = br.readLine().toInt()
             if (res == 1) {
-                ans = i
+                ans = 2*i+1
             }
         }
-        for (i in 4 until n-1 step 4) {
-            bw.write("? $i ${i - 2}\n")
+        if (ans != 0) {
+            bw.write("! $ans\n")
             bw.flush()
-            val res = br.readLine().toInt()
-            if (res == 1) {
-                ans = i
-            }
-            bw.write("? ${i - 1} ${i - 3}\n")
+        } else {
+            bw.write("? 1 3\n")
             bw.flush()
             val res2 = br.readLine().toInt()
             if (res2 == 1) {
-                ans = i - 1
+                bw.write("! 1\n")
+                bw.flush()
+            } else {
+                bw.write("? 1 4\n")
+                bw.flush()
+                val temp = br.readLine().toInt()
+                if(temp==1) {
+                    bw.write("! 1\n")
+                    bw.flush()
+                } else {
+                    bw.write("! 2\n")
+                    bw.flush()
+                }
             }
+
         }
-        bw.write("! $ans\n")
-        bw.flush()
     }
     br.close()
     bw.close()
