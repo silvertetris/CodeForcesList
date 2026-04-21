@@ -52,8 +52,8 @@ fun main() {
                 return@repeat
             }
         }
-        for(i in 0 until n-1) {
-            if(maximize[a[i]]>maximize[a[i+1]]) {
+        for(i in 1 until n) {//소수만 남으면
+            if(maximize[a[i-1]]>maximize[a[i]]) {
                 bw.write("Alice\n")
                 return@repeat
             }
