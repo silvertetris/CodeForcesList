@@ -18,41 +18,51 @@ fun main() {
         val pDiv = IntArray(n)
         val qDiv = IntArray(n)
         for (i in 0 until n) {
-            qDiv[i] = a[i]%q
-            pDiv[i] = a[i]%p
+            qDiv[i] = a[i] % q % p
+            pDiv[i] = a[i] % p % q
         }
-        if(n<k) {
-            bw.write("${a.sum()}\n")
+        if (n < k) {
+            var result = 0L
+            for (i in 0 until n) {
+                result += a[i]
+            }
+            bw.write("$result\n")
+            return@repeat
         }
-        //sliding window
-        var front = 0L
-        var end=0L
-        var frontMin = 0L
-        var endMin = 0L
-        for(i in 0 until k-1) {
-            frontMin+=pDiv[i]
-            endMin+=qDiv[i]
-        }
-        front+= minOf(frontMin, endMin)
-        for(i in 0+k-1 until n) {
-            front+=minOf(qDiv[i], pDiv[i])
-        }
-        frontMin=0
-        endMin=0
-        for(i in n-1 downTo n-k+1) {
-            frontMin+=qDiv[i]
-            endMin+=pDiv[i]
-        }
-        end+=minOf(frontMin, endMin)
-        for(i in n-k downTo  0) {
-            end+=minOf(qDiv[i], pDiv[i])
-        }
-        bw.write("${minOf(front, end)}\n")
+        //sliding window -> 앞구간 먼저 해놓고 뒤에 작은순, 뒤구간 먼저해놓고 앞에 작은순 비교
         /*
-        틀린이유
-        중간지점을 qDiv로 나눈 후에, pDiv로 중복 나누면 수가 더 적어질 수 있음
-        
+        서로 다르게 오차 누적이 발생하는 것을 더해줌
+        더해줘서 k이후로 탐색할때 슬라이딩 읜도우
+        front는 p로 잡을때
+        그 누적으로 잡은게 윈도우 밀면서 더 크면 초기화 시켜줌
          */
+        var frontres: Long
+        var endres: Long
+        var frontsum = 0L
+        var endsum = 0L
+        var baseSum = 0L
+        for (i in 0 until n) {
+            baseSum += minOf(qDiv[i], pDiv[i])
+        }
+        for (i in 0 until k) {
+            frontsum += pDiv[i] -minOf(pDiv[i], qDiv[i])
+            endsum += qDiv[i] - minOf(pDiv[i], qDiv[i])
+        }
+        frontres = frontsum
+        endres = endsum
+        //여기서 나온 i뒤를 더해줘야함
+        for(i in k until n) {
+            frontsum = frontsum - (pDiv[i-k] -minOf(pDiv[i-k], qDiv[i-k])) + pDiv[i] - minOf(pDiv[i], qDiv[i])
+            if(frontsum<frontres) {
+                frontres = frontsum
+            }
+
+            endsum = endsum-(qDiv[i-k] -minOf(pDiv[i-k], qDiv[i-k]) ) + qDiv[i] - minOf(qDiv[i], pDiv[i])
+            if(endsum<endres) {
+                endres = endsum
+            }
+        }
+        bw.write("${baseSum+minOf(frontres,endres)}\n")
     }
     bw.flush()
 }
