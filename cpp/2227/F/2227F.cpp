@@ -33,7 +33,6 @@ int main()
                 idx = i;
                 continue;
             }
-
             else
             {
                 res += (idx - i) * (a[i] - sufmin[i]);
@@ -48,15 +47,16 @@ int main()
             }
         }
         ll temp = 0;
-        vector<int> prefixSum (n);
+        vector<int> prefixSum(n);
         prefixSum[0] = sufmin[0];
-        for(int i=1; i<n; i++) {
-            prefixSum[i] = prefixSum[i-1] + sufmin[i];
+        for (int i = 1; i < n; i++)
+        {
+            prefixSum[i] = prefixSum[i - 1] + sufmin[i];
         }
 
         for (int i = 1; i < n; i++)
         {
-                temp = max(temp, (ll)(prefixSum[i-1] - ((i-indices[sufmin[i]])*(sufmin[i]-1))));
+            temp = max(temp, (ll)((i - indices[sufmin[i]] - 1) * (i - indices[sufmin[i]] - 2) / 2));
         }
         res += temp;
         cout << res << "\n";
