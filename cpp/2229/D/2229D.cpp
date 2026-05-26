@@ -22,5 +22,43 @@ int main() {
         for(int i=0; i<n; i++) {
             cin>>b[i];
         }
+        /*
+        max(min(a1, b1)) -> 최소것들의 최대 -> 이분탐색
+        최대화 시키는 것 -> diff = one - zero
+        diff 최대화 방법: 1의 개수가 최대화 -> 탐색하는 4개가 다 1이여야함.
+        */
+        int l=0;
+        int r=1e6 * 2;
+        while(l<=r) {
+            int mid = (l+r)/2;//m
+            int prev = -1;
+            int zero=0;
+            int one =0;
+            for(int i=0; i<n; i++) {
+                int prevNum = 0;
+                if(a[i]>=mid) {
+                    prevNum++;
+                }
+                if(b[i]>=mid) {
+                    prevNum++;
+                }
+                if(prevNum==0) {
+                    zero++;
+                    prev=0;
+                }else if(prevNum==1) {
+                    continue;
+                }
+                else {
+                    one++;
+                    prev=1;
+                }
+            }
+            if(one<zero) {//1이 더많아야하니까, m값을 내려야함
+                r = mid-1;
+            }else {
+                l = mid+1;
+            }
+        }
+        cout<<l<<"\n";
     }
 }
