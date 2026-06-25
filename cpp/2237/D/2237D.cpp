@@ -5,66 +5,64 @@
 
 using namespace std;
 int n;
-void solve() {
-    cin>>n;
+void solve()
+{
+    cin >> n;
     string s;
-    cin>>s;
+    cin >> s;
     /*
-    안되는놈 세기
-    모든 구간 개수 -> n(n+1)/2
-    1. 3개 000, 010, 101 세기
-    2. 2개짜리 서로 다른거 근데 001, 110 포함된거 있음 -> 2개짜리 기준 2로 나눠야함
-    00, 01
-    11, 10
-
-    000?
-    
+    1 - 0의 개수
+    각 개수를 더하다가
+    개수 차이가 0이면 안됨 -> 무조건 숫자 하나가 남음
+    그니까 현재까지 더한 값중 개수차이가 3의 배수 (현재랑 같은 것)을 지움
+    cnt[x] 자체가 3의 배수인 애들 자체를 지우는 것임.
+    그리고 개수가 0인건 다 지웠으니까
+    010101 통과된걸 지움
+    근데 둘이 숫자 같은건 이미 1번에서 지웠으니까
+    01010, 10101 같은 홀수들만 지움 그니까 2로나누고 지우는 것임.
     */
-    int type=0;
-    vector<ll> dp(3, 0);//000, 010, 101
-    bool flag = false;
-    ll ans = ((ll)n*(ll)(n+1))/2;
-    for(int i=0; i<n; i++) {
-        int temp;
-
-        if(s[i]=='0') {
-            temp = 1;
+    vector<int> cnt(3, 0);
+    cnt[0] = 1; // 초기 길이가 0인애
+    int x = 0;
+    int y=0;
+    ll ans = 0;
+    char prev = ' ';
+    for (int i = 0; i < n; i++)
+    {
+        if (s[i] == '0')
+        {
+            x++;
+        }
+        else
+        {
+            x += 2;
+        }
+        x%=3;
+        if(prev==s[i]) {
+            y=1;
         }else {
-            temp = 2;
+            y++;
+            prev = s[i];
         }
-
-
-        if(!flag) {
-            flag= true;
-            dp[type]++;
-        }
-        type=(type+temp)%3;
-        ans -= dp[type];
-        dp[type]++;
-    }
-
-    type = 0;//001, 110
-    for(int i=1; i<n; i++) {
-        if(s[i]!=s[i-1]) {
-            type++;
-        } else {
-            type = 0;
-        }
-        ans-=type/2;
+        ans+= accumulate(cnt.begin(), cnt.end(), 0)- cnt[x];
+        cnt[x]++;
+        ans-=(y-1)/2;
     }
     cout<<ans<<"\n";
 }
 
-int main() {
+int main()
+{
     ios::sync_with_stdio(false);
 
     cin.tie(0);
     cout.tie(0);
 
     int t;
-    cin>>t;
+    cin >> t;
 
-    while(t--) {
+    while (t--)
+    {
         solve();
     }
 }
