@@ -20,7 +20,7 @@ j번찌 읽으면, 생산성이 처음부터 b_j까지 부호 바뀜
 dp 다 이거 메모리삑 256mb
 */
 vector<ll> prefix;
-ll INF = LLONG_MIN+INT32_MAX;
+ll INF = -(ll)4e18;
 void solve() {
     cin>>n>>m;
     prefix.assign(n+2, 0);
