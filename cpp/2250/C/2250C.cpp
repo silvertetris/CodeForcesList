@@ -9,6 +9,25 @@ vector<int> l;
 vector<int> r;
 vector<int> u;
 vector<int> v;
+int m;
+bool check() {
+    int cnt =0;
+    int idx = 1;
+    for(int i=1; i<=n; i++) {
+        int left = idx;
+        int right = m-idx+1;
+        if((l[i]>left || left>r[i]) && (u[i]>right || right>v[i])) {
+            idx++;
+            continue;
+        }else {
+            cnt++;
+        }
+        if(cnt>n-m) {
+            return false;
+        }
+    }
+    return true;
+}
 void solve() {
     cin>>n;
     l.assign(n+1, 0);
@@ -18,7 +37,7 @@ void solve() {
     for(int i=1; i<=n; i++) {
         cin>>l[i]>>r[i]>>u[i]>>v[i];
     }
-    int m = n;
+    m = n;
     //int i=1부터 시작해서, 1안되면 2부터 시작하는걸로 바꿈 -> 그니까 안되면 기존꺼 유지하다가, 다음으로 건너뜀 근데 j는 순차적
     //j, m-j+1
     /*
@@ -27,35 +46,15 @@ void solve() {
     3. 지우면 모든 랭크가 바뀜 -> 모든 랭크를 확인해야함
     4. 안되는놈을 계속 지움
     */
-    vector<pair<int, pair<int, int>>> sub(n+1, {0, {0,0}});
-    for(int i=1; i<=n; i++) {
-        sub[i] = {i, {i, m-i+1}};
-    }
-    while(true) {
-        bool flag = false;
-
-        for(int i=n; i>=1; i--) {
-            if(sub[i].first ==0) continue;
-            if((sub[i].second.first<l[i] || sub[i].second.first>r[i]) && (sub[i].second.second<u[i] || sub[i].second.second>v[i])) {
-                continue;
-            }else {
-                sub[i] = {0, {0, 0}};
-                flag = true;
-                m--;
-                break;
-            }
-        }
-        if(!flag) {
-            break;
-        }
-        int idx = m;
-        for(int i=n; i>=1; i--) {
-            if(sub[i].first==0) continue;
-            sub[i] = {idx, {idx, m-idx+1}};
-            idx--;
+    for(int i=m; i>=1; i--) {
+        if(check()) {
+            cout<<m<<"\n";
+            return;
+        }else {
+            m--;
         }
     }
-    cout<<m<<"\n";
+    cout<<0<<"\n";
 }
 
 int main() {
