@@ -8,10 +8,23 @@ using namespace std;
 void solve() {
     string s, t;
     cin>>s>>t;
-    vector<int> cnt(26, 0);
+    vector<int> cnts(26, 0);
+    int qcnt = 0;
+    string res = "";
+    for(int i=0; i<s.size(); i++) {
+        if(s[i]!='?') {
+            cnts[s[i]-'a']++;
+            res+=s[i];
+        }else {
+            qcnt++;
+        }
+    }
+    vector<int> cntt(26, 0);
     for(int i=0; i<t.size(); i++) {
-        cnt[t[i]-'a']++;
-
+        cnts[t[i]-'a']++;
+    }
+    for(int i=0; i<26; i++) {
+        cntt[t[i]] = max(0, cntt[i]-cnts[i]);//t에 있는 애들을 뺌 남은 t만큼 더함
     }
 }
 
