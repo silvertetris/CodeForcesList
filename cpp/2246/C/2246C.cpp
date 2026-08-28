@@ -13,7 +13,7 @@ void solve() {
     for(int i=1; i<=n; i++) {
         cin>>a[i];
     }
-    vector<vector<ll>> dp (n+1, vector<ll> (3, 0));\
+    vector<vector<ll>> dp (n+1, vector<ll> (3, 0));
     /*
     #1. states/subproblems
     dp[i][j] = i번째 인덱스에서, j state에 대한 경우의 수
