@@ -7,10 +7,15 @@ using namespace std;
 string n;
 int m;
 int INF = 1e9+7;
-
+vector<ll> dp;
 void solve() {
     cin>>n>>m;
-
+    ll ans = 0;
+    for(int i=0; i<n.size(); i++) {
+        ans += dp[n[i]-'0' + m];
+        ans%=INF;
+    }
+    cout<<ans<<"\n";
 }
 
 int main() {
@@ -21,21 +26,15 @@ int main() {
     /*
     #1. states/subproblems
     dp(i, j) = i반복시 j스타트에서 -> 사이즈
+    dp[i] = 1스타트 +m시에 자리수
     */
    //#2. Base Cases
-    vector<vector<ll>> dp(2*100001, vector<ll> (10, 1));
-    //#3. transitions
-    for(int i=1; i<=2e5; i++) {
-        for(int j=0; j<10; j++) {
-            if(j<9) {
-                dp[i][j] = dp[i-1][j+1];
-            }
-            else {
-                dp[i][j] = 
-            }
-        }
-    }
 
+    dp.assign(2e5+10, 1ll);
+    dp[10] = 2;
+    for(int i=10; i<2e5+10; i++) {
+        dp[i] = (dp[i-9]+dp[i-10])%INF;
+    }
     int t;
     cin>>t;
 
